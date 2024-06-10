@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Password Reset Form with jQuery</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+// IMPORTANT: This code is meant for demonstration purposes and should not be used in production
+// without proper security measures. Sensitive information like SecretKey and TitleID should be
+// stored securely on a backend server and not exposed in the client-side code.
+
+$(document).ready(function(){
+  // Temporary storage of SecretKey and TitleID - not secure for production use
+  // Replace with server-side variables or environment variables
+  var SecretKey = "REPLACE_WITH_YOUR_SECRET_KEY"; // Replace with your real SecretKey value
+  var TitleID = "REPLACE_WITH_YOUR_TITLE_ID"; // Replace with your real TitleID value
+
+  $("form").submit(function(event){
+    event.preventDefault(); // Prevents the default form submission and redirection
+
+    var newPassword = $("#newPassword").val();
+    // Using URLSearchParams to get the Token from the URL
+    var urlParams = new URLSearchParams(window.location.search);
+    var token = urlParams.get('Token'); // Retrieves the Token from the URL
+
+    $.ajax({
+      url: `https://${TitleID}.playfabapi.com/admin/ResetPassword?sdk=PostmanCollection-0.210.240524`,
+      type: "POST",
+      headers: {
+        'X-PlayFabSDK': 'PostmanCollection-0.210.240524',
+        'X-SecretKey': SecretKey,
+        'Content-Type': 'application/json'
+      },
+      data: JSON.stringify({
+        Password: newPassword,
+        Token: token
+      }),
+      success: function(data, status){
+        alert("Data successfully sent. Status: " + status);
+      },
+      error: function(xhr, status, error){
+        alert("Error sending data: " + xhr.responseText);
+      }
+    });
+  });
+});
+</script>
+</head>
+<body>
+
+<form>
+  <!-- Removed input fields for SecretKey and TitleID -->
+  <label for="newPassword">New Password:</label>
+  <input type="password" id="newPassword" name="newPassword" required>
+
+  <!-- Removed input field for Token -->
+  <input type="submit" value="Send">
+</form>
+
+</body>
+</html>
